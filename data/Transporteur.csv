@@ -1,16 +1,16 @@
-Id;Nom;Type Client
-1;Chronopost;Particulier, Professionnel
-2;DHL Express;Professionnel
-3;La Poste;Particulier
-4;UPS;Particulier, Professionnel
-5;FedEx;Professionnel
-6;GLS;Particulier
-7;Mondial Relay;Particulier
-8;TNT;Professionnel
-9;Colis Priv�;Particulier
-10;DB Schenker;Professionnel
-11;Geodis;Particulier, Professionnel
-12;Amazon Logistics;Particulier
-13;DPD;Particulier, Professionnel
-14;XPO Logistics;Professionnel
-15;Hermes;Particulier
+﻿Id;Nom;Type Client;Particulier;Professionnel
+1;Chronopost;Particulier, Professionnel;TRUE;TRUE
+2;DHL Express;Professionnel;FALSE;TRUE
+3;La Poste;Particulier;TRUE;FALSE
+4;UPS;Particulier, Professionnel;TRUE;TRUE
+5;FedEx;Professionnel;FALSE;TRUE
+6;GLS;Particulier;TRUE;FALSE
+7;Mondial Relay;Particulier;TRUE;FALSE
+8;TNT;Professionnel;FALSE;TRUE
+9;Colis Privé;Particulier;TRUE;FALSE
+10;DB Schenker;Professionnel;FALSE;TRUE
+11;Geodis;Particulier, Professionnel;TRUE;TRUE
+12;Amazon Logistics;Particulier;TRUE;FALSE
+13;DPD;Particulier, Professionnel;TRUE;TRUE
+14;XPO Logistics;Professionnel;FALSE;TRUE
+15;Hermes;Particulier;TRUE;FALSE

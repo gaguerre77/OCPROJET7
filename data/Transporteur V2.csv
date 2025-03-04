@@ -1,0 +1,16 @@
+﻿Id,Nom,Particulier,Professionnel
+1,Chronopost,TRUE,TRUE
+2,DHL Express,FALSE,TRUE
+3,La Poste,TRUE,FALSE
+4,UPS,TRUE,TRUE
+5,FedEx,FALSE,TRUE
+6,GLS,TRUE,FALSE
+7,Mondial Relay,TRUE,FALSE
+8,TNT,FALSE,TRUE
+9,Colis Privé,TRUE,FALSE
+10,DB Schenker,FALSE,TRUE
+11,Geodis,TRUE,TRUE
+12,Amazon Logistics,TRUE,FALSE
+13,DPD,TRUE,TRUE
+14,XPO Logistics,FALSE,TRUE
+15,Hermes,TRUE,FALSE

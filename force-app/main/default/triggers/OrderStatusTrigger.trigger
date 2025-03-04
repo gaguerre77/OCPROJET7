@@ -25,8 +25,8 @@ trigger OrderStatusTrigger on Order (after update) {
                     (account.Particulier__c && o.Nb_Child_Product__c > 3)) {
 
                     try {
-                        // Query carrier prices for the shipping country
-                        List<Transporteur_Prix__c> carrierPrices = [
+                        // Query carrier with the best price for the shipping country
+                        List<Transporteur_Prix__c> bestPriceCarriers = [
                             SELECT Id, TransporteurId__c, Tarif__c, Delai_de_Livraison__c
                             FROM Transporteur_Prix__c
                             WHERE Pays__c = :o.ShippingCountry
@@ -34,24 +34,41 @@ trigger OrderStatusTrigger on Order (after update) {
                             LIMIT 1
                         ];
 
-                        // Select the best carrier (assuming lowest price is best)
-                        if (!carrierPrices.isEmpty()) {
-                            Transporteur_Prix__c bestCarrier = carrierPrices[0];
+                        // Query carrier with the best delay for the shipping country
+                        List<Transporteur_Prix__c> bestDelayCarriers = [
+                            SELECT Id, TransporteurId__c, Tarif__c, Delai_de_Livraison__c
+                            FROM Transporteur_Prix__c
+                            WHERE Pays__c = :o.ShippingCountry
+                            ORDER BY Delai_de_Livraison__c ASC
+                            LIMIT 1
+                        ];
 
-                            // Create Livraisons__c record
-                            Livraisons__c livraison = new Livraisons__c();
-                            livraison.Order__c = o.Id;
-                            livraison.PaysDestination__c = o.ShippingCountry;
-                            livraison.Etat__c = 'aexpedier';
-                            livraison.Particulier__c = account.Particulier__c;
-                            livraison.Professionnel__c = account.Professionnel__c;
-                            livraison.TransporteurMeilleurPrix__c = bestCarrier.TransporteurId__c; // Store carrier info
-                            livraison.MeilleurPrix__c = bestCarrier.Tarif__c; // Store best price info
-                            livraison.DelaiMeilleurPrix__c = bestCarrier.Delai_de_Livraison__c; // Store delay info
-                            livraisonsToInsert.add(livraison);
+                        // Create Livraisons__c record
+                        Livraisons__c livraison = new Livraisons__c();
+                        livraison.Order__c = o.Id;
+                        livraison.PaysDestination__c = o.ShippingCountry;
+                        livraison.Etat__c = 'aexpedier';
+                        livraison.Particulier__c = account.Particulier__c;
+                        livraison.Professionnel__c = account.Professionnel__c;
 
-                            System.debug('Livraisons__c record created for Order ID: ' + o.Id);
+                        // Set fields for best price carrier
+                        if (!bestPriceCarriers.isEmpty()) {
+                            Transporteur_Prix__c bestPriceCarrier = bestPriceCarriers[0];
+                            livraison.TransporteurMeilleurPrix__c = bestPriceCarrier.TransporteurId__c;
+                            livraison.MeilleurPrix__c = bestPriceCarrier.Tarif__c;
+                            livraison.DelaiMeilleurPrix__c = bestPriceCarrier.Delai_de_Livraison__c;
                         }
+
+                        // Set fields for best delay carrier
+                        if (!bestDelayCarriers.isEmpty()) {
+                            Transporteur_Prix__c bestDelayCarrier = bestDelayCarriers[0];
+                            livraison.TransporteurMeilleurDelai__c = bestDelayCarrier.TransporteurId__c;
+                            livraison.PrixMeilleurDelai__c = bestDelayCarrier.Tarif__c;
+                            livraison.MeilleurDelai__c = bestDelayCarrier.Delai_de_Livraison__c;
+                        }
+
+                        livraisonsToInsert.add(livraison);
+                        System.debug('Livraisons__c record created for Order ID: ' + o.Id);
                     } catch (Exception e) {
                         System.debug('Error selecting best carrier: ' + e.getMessage());
                     }

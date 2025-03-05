@@ -44,8 +44,11 @@ export default class TableauExpedition extends LightningElement {
     }
 
     handleRowAction(event) {
+        console.log('handleRowAction called'); 
         const actionName = event.detail.action.name;
         const row = event.detail.row;
+        console.log('Action Name:', actionName);
+        console.log('Row:', row);
 
         switch (actionName) {
             case 'meilleur_prix':
@@ -60,8 +63,10 @@ export default class TableauExpedition extends LightningElement {
     }
 
     completeLivraisonMeilleurPrix(livraisonId) {
+        console.log('completeLivraisonMeilleurPrix called with ID:', livraisonId);
         completeLivraisonMeilleurPrix({ livraisonId })
             .then(() => {
+                console.log('Livraison complétée avec succès');
                 this.refreshLivraisons();
             })
             .catch(error => {

@@ -1,4 +1,5 @@
 import { LightningElement, wire } from 'lwc';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import getLivraisons from '@salesforce/apex/LivraisonController.getLivraisons';
 import completeLivraisonMeilleurPrix from '@salesforce/apex/LivraisonController.completeLivraisonMeilleurPrix';
 import completeLivraisonMeilleurDelai from '@salesforce/apex/LivraisonController.completeLivraisonMeilleurDelai';
@@ -44,11 +45,8 @@ export default class TableauExpedition extends LightningElement {
     }
 
     handleRowAction(event) {
-        console.log('handleRowAction called'); 
         const actionName = event.detail.action.name;
         const row = event.detail.row;
-        console.log('Action Name:', actionName);
-        console.log('Row:', row);
 
         switch (actionName) {
             case 'meilleur_prix':
@@ -63,10 +61,9 @@ export default class TableauExpedition extends LightningElement {
     }
 
     completeLivraisonMeilleurPrix(livraisonId) {
-        console.log('completeLivraisonMeilleurPrix called with ID:', livraisonId);
         completeLivraisonMeilleurPrix({ livraisonId })
             .then(() => {
-                console.log('Livraison complétée avec succès');
+                this.showSuccessMessage('Livraison expédiée avec le meilleur prix');
                 this.refreshLivraisons();
             })
             .catch(error => {
@@ -77,6 +74,7 @@ export default class TableauExpedition extends LightningElement {
     completeLivraisonMeilleurDelai(livraisonId) {
         completeLivraisonMeilleurDelai({ livraisonId })
             .then(() => {
+                this.showSuccessMessage('Livraison expédiée avec le meilleur délai');
                 this.refreshLivraisons();
             })
             .catch(error => {
@@ -94,7 +92,22 @@ export default class TableauExpedition extends LightningElement {
             });
     }
 
+    showSuccessMessage(message) {
+        const evt = new ShowToastEvent({
+            title: 'Succès',
+            message: message,
+            variant: 'success',
+        });
+        this.dispatchEvent(evt);
+    }
+
     showError(error) {
         console.error(error);
+        const evt = new ShowToastEvent({
+            title: 'Erreur',
+            message: error.body.message || 'Une erreur inconnue est survenue.',
+            variant: 'error',
+        });
+        this.dispatchEvent(evt);
     }
 }

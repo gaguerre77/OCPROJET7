@@ -1,10 +1,11 @@
-import { LightningElement, wire } from 'lwc';
+import { LightningElement, wire, track } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import getLivraisons from '@salesforce/apex/LivraisonController.getLivraisons';
 import completeLivraisonMeilleurPrix from '@salesforce/apex/LivraisonController.completeLivraisonMeilleurPrix';
 import completeLivraisonMeilleurDelai from '@salesforce/apex/LivraisonController.completeLivraisonMeilleurDelai';
 
-const COLUMNS = [
+
+var COLUMNS = [
     { label: 'Numéro de Livraison', fieldName: 'Name', type: 'text' },
     { label: 'Pays de Destination', fieldName: 'PaysDestination__c', type: 'text' },
     {
@@ -32,15 +33,16 @@ const COLUMNS = [
 ];
 
 export default class TableauExpedition extends LightningElement {
-    columns = COLUMNS;
-    livraisons = [];
-
+    @track columns = COLUMNS;
+    @track livraisons = [];
+    @track rafraichi ;
     @wire(getLivraisons)
-    wiredLivraisons({ error, data }) {
-        if (data) {
-            this.livraisons = data;
-        } else if (error) {
-            this.showError(error);
+    wiredLivraisons(result) {
+        this.rafraichi = result;
+        if (result.data) {
+            this.livraisons = result.data;
+        } else if (result.error) {
+            this.showError(result.error);
         }
     }
 

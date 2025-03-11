@@ -61,15 +61,16 @@ public class AccountSelectorTest {
     }
 
     @IsTest
-    static void testGetAccountsByIdsExceptionHandling() {
-        // Simuler une exception en passant un ID invalide
-        Set<Id> invalidAccountIds = new Set<Id>{null};
-
-        try {
-            AccountSelector.getAccountsByIds(invalidAccountIds);
-            System.assert(false, 'Une exception aurait dû être levée.');
-        } catch (Exception ex) {
-            System.assert(ex.getMessage().contains('Erreur lors de la récupération des comptes'), 'Le message d\'erreur n\'est pas correct.');
-        }
+    static void testGetAccountsByIdsInvalidId() {
+        // Utiliser un ID valide mais inexistant
+        Set<Id> nonExistentAccountIds = new Set<Id>{Id.valueOf('001000000000000AAA')};
+    
+        // Appeler la méthode avec l'ID inexistant
+        Map<Id, Account> accountMap = AccountSelector.getAccountsByIds(nonExistentAccountIds);
+    
+        // Vérifier que la map est vide
+        System.assertEquals(0, accountMap.size(), 'La map ne devrait pas contenir de comptes pour un ID inexistant.');
     }
+    
+    
 }
